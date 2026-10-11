@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -32,10 +31,10 @@ public class Employee {
     @Size (min = 2, max = 50, message = "Last name must be between 2 and 50 characters")
     private String lastName;
     @Email (message = "Email should be valid")
-    @Null (message = "Email is required")
+    @NotNull (message = "Email is required")
     private String email;
     @Pattern(regexp = "^\\+?[0-9. ()-]{10,15}$", message = "Phone number is invalid")
-    @Null (message = "Phone number is required")
+    @NotNull (message = "Phone number is required")
     private String phoneNumber;
     @NotNull (message = "Hire date is required")
     @PastOrPresent (message = "Hire date cannot be in the future")
