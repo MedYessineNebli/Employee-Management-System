@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yessine_nebli.Employee.Management.System.entities.Employee;
+import com.yessine_nebli.Employee.Management.System.shared.CustomResponseException;
+import com.yessine_nebli.Employee.Management.System.shared.GlobalResponse;
 
 import jakarta.validation.Valid;
 
@@ -32,29 +34,29 @@ public class EmployeeController {
     ArrayList<Employee> employees = new ArrayList<>();
 
     @GetMapping
-    public ResponseEntity<ArrayList<Employee>> findAll() {
-        return new ResponseEntity<ArrayList<Employee>>(employees, HttpStatus.OK);
+    public ResponseEntity<GlobalResponse<ArrayList<Employee>>> findAll() {
+        return new ResponseEntity<>(new GlobalResponse<>(employees), HttpStatus.OK);
     }
 
     @GetMapping("/{employeeId}")
-    public  ResponseEntity<Employee> findOne(@PathVariable UUID employeeId) {
-        Optional<Employee> employee = employees.stream()
+    public  ResponseEntity<GlobalResponse<Employee>> findOne(@PathVariable UUID employeeId) {
+        Employee employee = employees.stream()
             .filter(emp -> emp.getId().equals(employeeId))
-            .findFirst();
+            .findFirst()
+            .orElseThrow(()-> CustomResponseException.ResourceNotFound(
+                "Employee with id : " + employeeId + " not found"
+            ));
 
-        if(employee.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<Employee>(employee.get(), HttpStatus.OK);
+            return new ResponseEntity<>(new GlobalResponse<>(employee), HttpStatus.OK);
     }
 
     @PostMapping 
-    public ResponseEntity<Employee> createOne(@RequestBody @Valid Employee employee) {
+    public ResponseEntity<GlobalResponse<Employee>> createOne(@RequestBody @Valid Employee employee) {
         employee.setId(UUID.randomUUID());
         employee.setDepartmentId(UUID.randomUUID());
 
         employees.add(employee);
-        return new ResponseEntity<Employee>(employee, HttpStatus.CREATED);
+        return new ResponseEntity<>(new GlobalResponse<>(employee), HttpStatus.CREATED);
     }
 
     @DeleteMapping ("/{employeeId}")
@@ -70,24 +72,22 @@ public class EmployeeController {
     }
 
     @PutMapping ("/{employeeId}")
-    public ResponseEntity<Employee> updateOne(@PathVariable UUID employeeId, @RequestBody @Valid Employee updatedEmployee) {
-        Optional<Employee> existingEmployee = employees.stream()
+    public ResponseEntity<GlobalResponse<Employee>> updateOne(@PathVariable UUID employeeId, @RequestBody @Valid Employee updatedEmployee) {
+        
+        Employee existingEmployee = employees.stream()
             .filter(emp -> emp.getId().equals(employeeId))
-            .findFirst();
+            .findFirst() 
+            .orElseThrow(()-> CustomResponseException.ResourceNotFound(
+                "Employee with id : " + employeeId + " not found"
+            ));
 
+        existingEmployee.setFirstName(updatedEmployee.getFirstName());
+        existingEmployee.setLastName(updatedEmployee.getLastName());  
+        existingEmployee.setEmail(updatedEmployee.getEmail());  
+        existingEmployee.setPhoneNumber(updatedEmployee.getPhoneNumber());  
+        existingEmployee.setHireDate(updatedEmployee.getHireDate());  
+        existingEmployee.setDepartmentId(existingEmployee.getDepartmentId()); 
 
-        if (existingEmployee.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        Employee updatEmployee = existingEmployee.get();
-        updatEmployee.setFirstName(updatedEmployee.getFirstName());
-        updatEmployee.setLastName(updatedEmployee.getLastName());  
-        updatEmployee.setEmail(updatedEmployee.getEmail());  
-        updatEmployee.setPhoneNumber(updatedEmployee.getPhoneNumber());  
-        updatEmployee.setHireDate(updatedEmployee.getHireDate());  
-        updatEmployee.setDepartmentId(updatedEmployee.getDepartmentId()); 
-
-        return new ResponseEntity<Employee>(updatedEmployee, HttpStatus.OK);
+       return new ResponseEntity<>(new GlobalResponse<>(existingEmployee), HttpStatus.OK);
     }
 }
