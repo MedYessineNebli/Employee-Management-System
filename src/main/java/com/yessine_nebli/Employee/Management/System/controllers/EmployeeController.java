@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yessine_nebli.Employee.Management.System.abstracts.EmployeeService;
+import com.yessine_nebli.Employee.Management.System.dtos.EmployeeCreate;
+import com.yessine_nebli.Employee.Management.System.dtos.EmployeeUpdate;
 import com.yessine_nebli.Employee.Management.System.entities.Employee;
 import com.yessine_nebli.Employee.Management.System.shared.GlobalResponse;
 
@@ -64,7 +66,7 @@ public class EmployeeController {
     @PutMapping("/{employeeId}")
     public ResponseEntity<GlobalResponse<Employee>> updateOne(
             @PathVariable UUID employeeId,
-            @RequestBody @Valid Employee employee) {
+            @RequestBody @Valid EmployeeUpdate employee) {
 
         Employee updatedEmployee = employeeService.updateOne(employeeId, employee);
         return new ResponseEntity<>(new GlobalResponse<>(updatedEmployee), HttpStatus.OK);
@@ -72,7 +74,7 @@ public class EmployeeController {
 
     
     @PostMapping
-    public ResponseEntity<GlobalResponse<Employee>> createOne(@RequestBody @Valid Employee employee) {
+    public ResponseEntity<GlobalResponse<Employee>> createOne(@RequestBody @Valid EmployeeCreate employee) {
         
         Employee newEmployee = employeeService.createOne(employee);
         return new ResponseEntity<>(new GlobalResponse<>(newEmployee), HttpStatus.CREATED);

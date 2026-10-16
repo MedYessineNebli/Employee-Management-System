@@ -3,6 +3,8 @@ package com.yessine_nebli.Employee.Management.System.abstracts;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import com.yessine_nebli.Employee.Management.System.dtos.EmployeeCreate;
+import com.yessine_nebli.Employee.Management.System.dtos.EmployeeUpdate;
 import com.yessine_nebli.Employee.Management.System.entities.Employee;
 
 public interface EmployeeService {
@@ -13,7 +15,7 @@ public interface EmployeeService {
 
     void deleteOne(UUID employeeId);
 
-    Employee updateOne(UUID employeeId, Employee updatedEmployee);
+    Employee updateOne(UUID employeeId, EmployeeUpdate updatedEmployee);
 
-    Employee createOne(Employee employee);
+    Employee createOne(EmployeeCreate employee);
 }
