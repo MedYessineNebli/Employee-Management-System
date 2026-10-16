@@ -1,6 +1,6 @@
 package com.yessine_nebli.Employee.Management.System.abstracts;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import com.yessine_nebli.Employee.Management.System.dtos.EmployeeCreate;
@@ -11,7 +11,7 @@ public interface EmployeeService {
 
     Employee findOne(UUID employeeId);
 
-    ArrayList<Employee> findAll();
+    List<Employee> findAll();
 
     void deleteOne(UUID employeeId);
 

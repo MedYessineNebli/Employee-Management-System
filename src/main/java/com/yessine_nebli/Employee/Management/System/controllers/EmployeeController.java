@@ -1,6 +1,7 @@
 package com.yessine_nebli.Employee.Management.System.controllers;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -38,14 +39,12 @@ public class EmployeeController {
         this.employeeService = employeeService;
     }
 
-
     @GetMapping
-    public ResponseEntity<GlobalResponse<ArrayList<Employee>>> findAll() {
+    public ResponseEntity<GlobalResponse<List<Employee>>> findAll() {
 
-        ArrayList<Employee> employees = employeeService.findAll();
+        List<Employee> employees = employeeService.findAll();
         return new ResponseEntity<>(new GlobalResponse<>(employees), HttpStatus.OK);
     }
-
 
     @GetMapping("/{employeeId}")
     public ResponseEntity<GlobalResponse<Employee>> findOne(@PathVariable UUID employeeId) {
@@ -54,14 +53,12 @@ public class EmployeeController {
         return new ResponseEntity<>(new GlobalResponse<>(employee), HttpStatus.OK);
     }
 
-
     @DeleteMapping("/{employeeId}")
     public ResponseEntity<Void> deleteOne(@PathVariable UUID employeeId) {
 
         employeeService.deleteOne(employeeId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
 
     @PutMapping("/{employeeId}")
     public ResponseEntity<GlobalResponse<Employee>> updateOne(
@@ -72,10 +69,9 @@ public class EmployeeController {
         return new ResponseEntity<>(new GlobalResponse<>(updatedEmployee), HttpStatus.OK);
     }
 
-    
     @PostMapping
     public ResponseEntity<GlobalResponse<Employee>> createOne(@RequestBody @Valid EmployeeCreate employee) {
-        
+
         Employee newEmployee = employeeService.createOne(employee);
         return new ResponseEntity<>(new GlobalResponse<>(newEmployee), HttpStatus.CREATED);
     }

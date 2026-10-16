@@ -1,28 +1,29 @@
 package com.yessine_nebli.Employee.Management.System.services;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.yessine_nebli.Employee.Management.System.abstracts.EmployeeService;
 import com.yessine_nebli.Employee.Management.System.dtos.EmployeeCreate;
 import com.yessine_nebli.Employee.Management.System.dtos.EmployeeUpdate;
 import com.yessine_nebli.Employee.Management.System.entities.Employee;
+import com.yessine_nebli.Employee.Management.System.repositories.EmployeeRepo;
 import com.yessine_nebli.Employee.Management.System.shared.CustomResponseException;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-    ArrayList<Employee> employees = new ArrayList<>();
+    @Autowired
+    private EmployeeRepo employeeRepo;
 
     @Override
     public Employee findOne(UUID employeeId) {
 
-        Employee employee = employees.stream()
-                .filter(emp -> emp.getId().equals(employeeId))
-                .findFirst()
+        Employee employee = employeeRepo.findById(employeeId)
                 .orElseThrow(() -> CustomResponseException.ResourceNotFound(
                         "Employee with id : " + employeeId + " not found"));
 
@@ -30,30 +31,22 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public ArrayList<Employee> findAll() {
-        
-        return employees;
+    public List<Employee> findAll() {
+
+        return employeeRepo.findAll();
     }
 
     @Override
     public void deleteOne(UUID employeeId) {
 
-        Optional<Employee> employee = employees.stream()
-                .filter(emp -> emp.getId().equals(employeeId))
-                .findFirst();
-
-        if (employee.isPresent()) {
-            employees.remove(employee.get());
-        }
-
+        Optional<Employee> employee = employeeRepo.findById(employeeId);
+        employee.ifPresent(value -> employeeRepo.deleteById(value.getId()));
     }
 
     @Override
     public Employee updateOne(UUID employeeId, EmployeeUpdate updatedEmployee) {
 
-        Employee existingEmployee = employees.stream()
-                .filter(emp -> emp.getId().equals(employeeId))
-                .findFirst()
+        Employee existingEmployee = employeeRepo.findById(employeeId)
                 .orElseThrow(() -> CustomResponseException.ResourceNotFound(
                         "Employee with id : " + employeeId + " not found"));
 
@@ -62,6 +55,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         existingEmployee.setPhoneNumber(updatedEmployee.phoneNumber());
         existingEmployee.setPosition(updatedEmployee.position());
 
+        employeeRepo.save(existingEmployee);
         return existingEmployee;
     }
 
@@ -69,9 +63,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Employee createOne(EmployeeCreate employeeCreate) {
 
         Employee employee = new Employee();
-
-        employee.setId(UUID.randomUUID());
-        employee.setDepartmentId(UUID.randomUUID());
         employee.setFirstName(employeeCreate.firstName());
         employee.setLastName(employeeCreate.lastName());
         employee.setEmail(employeeCreate.email());
@@ -79,7 +70,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setHireDate(employeeCreate.hireDate());
         employee.setPosition(employeeCreate.position());
 
-        employees.add(employee);
+        employeeRepo.save(employee);
         return employee;
     }
 
