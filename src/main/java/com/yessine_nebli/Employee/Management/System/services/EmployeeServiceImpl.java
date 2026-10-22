@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import com.yessine_nebli.Employee.Management.System.abstracts.EmployeeService;
 import com.yessine_nebli.Employee.Management.System.dtos.EmployeeCreate;
 import com.yessine_nebli.Employee.Management.System.dtos.EmployeeUpdate;
+import com.yessine_nebli.Employee.Management.System.entities.Department;
 import com.yessine_nebli.Employee.Management.System.entities.Employee;
+import com.yessine_nebli.Employee.Management.System.repositories.DepartmentRepo;
 import com.yessine_nebli.Employee.Management.System.repositories.EmployeeRepo;
 import com.yessine_nebli.Employee.Management.System.shared.CustomResponseException;
 
@@ -19,6 +21,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired
     private EmployeeRepo employeeRepo;
+
+    @Autowired
+    private DepartmentRepo departmentRepo;
 
     @Override
     public Employee findOne(UUID employeeId) {
@@ -63,12 +68,18 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Employee createOne(EmployeeCreate employeeCreate) {
 
         Employee employee = new Employee();
+
+        Department department = departmentRepo.findById(employeeCreate.departmentId())
+                .orElseThrow(() -> CustomResponseException.ResourceNotFound(
+                        "Department with id : " + employeeCreate.departmentId() + " not found"));
+
         employee.setFirstName(employeeCreate.firstName());
         employee.setLastName(employeeCreate.lastName());
         employee.setEmail(employeeCreate.email());
         employee.setPhoneNumber(employeeCreate.phoneNumber());
         employee.setHireDate(employeeCreate.hireDate());
         employee.setPosition(employeeCreate.position());
+        employee.setDepartment(department);
 
         employeeRepo.save(employee);
         return employee;

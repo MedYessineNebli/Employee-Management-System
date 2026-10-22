@@ -1,6 +1,7 @@
 package com.yessine_nebli.Employee.Management.System.dtos;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -30,7 +31,10 @@ public record EmployeeCreate(
     LocalDate hireDate,
     
     @NotNull (message = "Position is required")
-    String position
+    String position,
+
+    @NotNull (message = "Department ID is required")
+    UUID departmentId
 ) {
 
 }
