@@ -1,6 +1,5 @@
 package com.yessine_nebli.Employee.Management.System.controllers;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,7 +25,6 @@ import com.yessine_nebli.Employee.Management.System.entities.LeaveRequest;
 import com.yessine_nebli.Employee.Management.System.shared.GlobalResponse;
 
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 //annotation to let spring boot that this class is controller

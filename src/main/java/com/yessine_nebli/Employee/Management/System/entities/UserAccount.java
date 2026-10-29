@@ -1,8 +1,11 @@
 package com.yessine_nebli.Employee.Management.System.entities;
 
+import java.util.Collection;
 import java.util.UUID;
 
 import org.hibernate.annotations.UuidGenerator;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,7 +26,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserAccount {
+public class UserAccount implements UserDetails{
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -42,5 +45,11 @@ public class UserAccount {
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "employee_id", unique = true, nullable = false)
     private Employee employee;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        
+        throw new UnsupportedOperationException("Unimplemented method 'getAuthorities'");
+    }
 
 }

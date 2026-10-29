@@ -14,5 +14,9 @@ public class CustomResponseException extends RuntimeException {
     public static CustomResponseException ResourceNotFound(String message) {
         return new CustomResponseException(404, message);
     }
+
+    public static CustomResponseException BadCredentials() {
+        return new CustomResponseException(401, "Bad credentials");
+    }
     
 }

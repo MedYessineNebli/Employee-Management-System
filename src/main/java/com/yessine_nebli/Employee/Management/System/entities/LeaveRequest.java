@@ -1,6 +1,5 @@
 package com.yessine_nebli.Employee.Management.System.entities;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.UUID;
 
