@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.yessine_nebli.Employee.Management.System.dtos.LoginRequest;
 import com.yessine_nebli.Employee.Management.System.dtos.SignupRequest;
 import com.yessine_nebli.Employee.Management.System.services.AuthServiceImpl;
 import com.yessine_nebli.Employee.Management.System.shared.GlobalResponse;
@@ -23,15 +24,15 @@ public class AuthController {
     public ResponseEntity<GlobalResponse<String>> signup(@RequestBody SignupRequest signupRequest) {
 
         authService.signup(signupRequest);
-        System.out.println("Signup request received: " + signupRequest.employeeId());
         return new ResponseEntity<>(new GlobalResponse<String>("Signed Up"), HttpStatus.CREATED);
     }
 
-    // @PostMapping("/login")
-    // public ResponseEntity<GlobalResponse<String>> signin(@RequestBody SignupRequest signupRequest) {
+    @PostMapping("/login")
+    public ResponseEntity<GlobalResponse<String>> signin(@RequestBody LoginRequest loginRequest) {
 
-    //     authService.signin(signupRequest);
-    //     System.out.println("Signin request received: " + signupRequest.employeeId());
-    //     return new ResponseEntity<>(new GlobalResponse<String>("Signed In"), HttpStatus.CREATED);
-    // }
+        String token = authService.login(loginRequest);
+
+        return new ResponseEntity<>(
+            new GlobalResponse<>(token), HttpStatus.CREATED);
+    }
 }

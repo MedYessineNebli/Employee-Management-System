@@ -1,9 +1,16 @@
 package com.yessine_nebli.Employee.Management.System.services;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.yessine_nebli.Employee.Management.System.config.JwtHelper;
+import com.yessine_nebli.Employee.Management.System.dtos.LoginRequest;
 import com.yessine_nebli.Employee.Management.System.dtos.SignupRequest;
 import com.yessine_nebli.Employee.Management.System.entities.Employee;
 import com.yessine_nebli.Employee.Management.System.entities.UserAccount;
@@ -23,6 +30,12 @@ public class AuthServiceImpl {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtHelper jwtHelper;
+
     public void signup(SignupRequest signupRequest) {
 
         Employee employee = employeeRepo.findById(signupRequest.employeeId())
@@ -35,6 +48,21 @@ public class AuthServiceImpl {
         account.setEmployee(employee);
 
         userAccountRepo.save(account);
+    }
+
+    public String login(LoginRequest loginRequest) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.username(),
+                        loginRequest.password()));
+
+        UserAccount user = userAccountRepo.findOneByUsername(loginRequest.username())
+                .orElseThrow(() -> CustomResponseException.BadCredentials());
+
+        Map<String, Object> customClaims = new HashMap<>();
+        customClaims.put("userId", user.getId());
+        customClaims.put("role", user.getRole());
+        return jwtHelper.generateToken(customClaims, user);
     }
 
 }
