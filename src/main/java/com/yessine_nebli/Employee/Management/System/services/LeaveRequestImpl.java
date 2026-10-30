@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.yessine_nebli.Employee.Management.System.abstracts.LeaveRequestService;
@@ -23,6 +24,7 @@ public class LeaveRequestImpl implements LeaveRequestService {
     @Autowired 
     private LeaveRequestRepo leaveRequestRepo;
 
+    @PreAuthorize("@securityUtils.isOwner(#employeeId)")
     @Override
     public LeaveRequest createOne(LeaveRequestCreate leaveRequestCreate, UUID employeeId) {
 
@@ -41,6 +43,7 @@ public class LeaveRequestImpl implements LeaveRequestService {
         return leaveRequest;
     }
 
+    @PreAuthorize("@securityUtils.isOwner(#employeeId)")
     @Override
     public List<LeaveRequest> findAllByEmployeeId(UUID employeeId) {
         

@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.yessine_nebli.Employee.Management.System.abstracts.EmployeeService;
@@ -15,6 +16,7 @@ import com.yessine_nebli.Employee.Management.System.entities.Employee;
 import com.yessine_nebli.Employee.Management.System.repositories.DepartmentRepo;
 import com.yessine_nebli.Employee.Management.System.repositories.EmployeeRepo;
 import com.yessine_nebli.Employee.Management.System.shared.CustomResponseException;
+import com.yessine_nebli.Employee.Management.System.utils.SecurityUtils;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -25,6 +27,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     private DepartmentRepo departmentRepo;
 
+    
+
+    @PreAuthorize("@securityUtils.isOwner(#employeeId)")
     @Override
     public Employee findOne(UUID employeeId) {
 
@@ -48,6 +53,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.ifPresent(value -> employeeRepo.deleteById(value.getId()));
     }
 
+    @PreAuthorize("@securityUtils.isOwner(#employeeId)")
     @Override
     public Employee updateOne(UUID employeeId, EmployeeUpdate updatedEmployee) {
 

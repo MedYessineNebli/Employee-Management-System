@@ -79,7 +79,7 @@ public class EmployeeController {
     }
 
 
-    @PostMapping("/{employeeId}/leave-request")
+    @PostMapping("/{employeeId}/leave-requests")
     public ResponseEntity<GlobalResponse<LeaveRequest>> leaveRequest(
             @PathVariable UUID employeeId,
             @RequestBody @Valid LeaveRequestCreate leaveRequest) {
