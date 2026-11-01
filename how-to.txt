@@ -2,3 +2,8 @@
 mvnw.cmd clean
 mvnw.cmd compile
 mvnw.cmd spring-boot:run
+
+//docker
+docker compose up -d
+docker compose ps 
+docker compose logs
