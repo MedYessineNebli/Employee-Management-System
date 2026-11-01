@@ -26,7 +26,12 @@ public class AuthServiceImpl {
     private final AuthenticationManager authenticationManager;
     private final JwtHelper jwtHelper;
 
-    AuthServiceImpl(JwtHelper jwtHelper, UserAccountRepo userAccountRepo, EmployeeRepo employeeRepo, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
+    AuthServiceImpl(
+            JwtHelper jwtHelper,
+            UserAccountRepo userAccountRepo,
+            EmployeeRepo employeeRepo,
+            PasswordEncoder passwordEncoder,
+            AuthenticationManager authenticationManager) {
         this.jwtHelper = jwtHelper;
         this.userAccountRepo = userAccountRepo;
         this.employeeRepo = employeeRepo;
@@ -34,11 +39,14 @@ public class AuthServiceImpl {
         this.authenticationManager = authenticationManager;
     }
 
-    public void signup(SignupRequest signupRequest) {
+    public void signup(SignupRequest signupRequest, String token) {
 
-        Employee employee = employeeRepo.findById(signupRequest.employeeId())
-                .orElseThrow(() -> CustomResponseException.ResourceNotFound(
-                        "Employee with id : " + signupRequest.employeeId() + " not found"));
+        Employee employee = employeeRepo.findOneByAccountCreationToken(token)
+                .orElseThrow(() -> CustomResponseException.ResourceNotFound("Invalid token"));
+
+        if(employee.isVerified()){
+            throw CustomResponseException.BadRequest("Account already verified");
+        }
 
         UserAccount account = new UserAccount();
         account.setUsername(signupRequest.username());
@@ -46,6 +54,10 @@ public class AuthServiceImpl {
         account.setEmployee(employee);
 
         userAccountRepo.save(account);
+
+        employee.setVerified(true);
+        employee.setAccountCreationToken(null);
+        employeeRepo.save(employee);
     }
 
     public String login(LoginRequest loginRequest) {
