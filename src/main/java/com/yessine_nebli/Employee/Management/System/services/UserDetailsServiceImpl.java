@@ -2,7 +2,6 @@ package com.yessine_nebli.Employee.Management.System.services;
 
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,8 +15,11 @@ import com.yessine_nebli.Employee.Management.System.shared.CustomResponseExcepti
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    @Autowired
-    private UserAccountRepo userAccountRepo;
+    private final UserAccountRepo userAccountRepo;
+
+    UserDetailsServiceImpl(UserAccountRepo userAccountRepo) {
+        this.userAccountRepo = userAccountRepo;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.yessine_nebli.Employee.Management.System.abstracts.DepartmentService;
@@ -16,8 +15,11 @@ import com.yessine_nebli.Employee.Management.System.shared.CustomResponseExcepti
 @Service 
 public class DepartmentServiceImpl implements  DepartmentService{
 
-    @Autowired
-    private DepartmentRepo departmentRepo;
+    private final DepartmentRepo departmentRepo;
+
+    DepartmentServiceImpl(DepartmentRepo departmentRepo) {
+        this.departmentRepo = departmentRepo;
+    }
 
     @Override
     public Department createOne(DepartmentCreate departmentCreate) {

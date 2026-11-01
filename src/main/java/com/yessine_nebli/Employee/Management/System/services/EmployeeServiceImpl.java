@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -16,18 +15,19 @@ import com.yessine_nebli.Employee.Management.System.entities.Employee;
 import com.yessine_nebli.Employee.Management.System.repositories.DepartmentRepo;
 import com.yessine_nebli.Employee.Management.System.repositories.EmployeeRepo;
 import com.yessine_nebli.Employee.Management.System.shared.CustomResponseException;
-import com.yessine_nebli.Employee.Management.System.utils.SecurityUtils;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-    @Autowired
-    private EmployeeRepo employeeRepo;
+    private final EmployeeRepo employeeRepo;
+    private final DepartmentRepo departmentRepo;
+    private final EmailService emailService;
 
-    @Autowired
-    private DepartmentRepo departmentRepo;
-
-    
+    EmployeeServiceImpl(EmailService emailService, EmployeeRepo employeeRepo , DepartmentRepo departmentRepo) {
+        this.emailService = emailService;
+        this.employeeRepo = employeeRepo;
+        this.departmentRepo = departmentRepo;
+    }
 
     @PreAuthorize("@securityUtils.isOwner(#employeeId)")
     @Override
@@ -79,6 +79,10 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .orElseThrow(() -> CustomResponseException.ResourceNotFound(
                         "Department with id : " + employeeCreate.departmentId() + " not found"));
 
+        String token  = UUID.randomUUID().toString();
+        employee.setVerified(false);
+        employee.setAccountCreationToken(token);
+        
         employee.setFirstName(employeeCreate.firstName());
         employee.setLastName(employeeCreate.lastName());
         employee.setEmail(employeeCreate.email());
@@ -88,6 +92,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setDepartment(department);
 
         employeeRepo.save(employee);
+
+        emailService.sendAccountCreationEmail(employee.getEmail(), token);
         return employee;
     }
 

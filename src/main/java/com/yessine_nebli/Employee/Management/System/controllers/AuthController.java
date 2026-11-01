@@ -1,6 +1,5 @@
 package com.yessine_nebli.Employee.Management.System.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,8 +16,11 @@ import com.yessine_nebli.Employee.Management.System.shared.GlobalResponse;
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
-    private AuthServiceImpl authService;
+    private final AuthServiceImpl authService;
+
+    AuthController(AuthServiceImpl authService) {
+        this.authService = authService;
+    }
 
     @PostMapping("/signup")
     public ResponseEntity<GlobalResponse<String>> signup(@RequestBody SignupRequest signupRequest) {

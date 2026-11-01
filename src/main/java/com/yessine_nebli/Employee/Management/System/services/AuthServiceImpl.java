@@ -3,7 +3,6 @@ package com.yessine_nebli.Employee.Management.System.services;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,20 +20,19 @@ import com.yessine_nebli.Employee.Management.System.shared.CustomResponseExcepti
 @Service
 public class AuthServiceImpl {
 
-    @Autowired
-    private UserAccountRepo userAccountRepo;
+    private final UserAccountRepo userAccountRepo;
+    private final EmployeeRepo employeeRepo;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtHelper jwtHelper;
 
-    @Autowired
-    private EmployeeRepo employeeRepo;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private JwtHelper jwtHelper;
+    AuthServiceImpl(JwtHelper jwtHelper, UserAccountRepo userAccountRepo, EmployeeRepo employeeRepo, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
+        this.jwtHelper = jwtHelper;
+        this.userAccountRepo = userAccountRepo;
+        this.employeeRepo = employeeRepo;
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+    }
 
     public void signup(SignupRequest signupRequest) {
 

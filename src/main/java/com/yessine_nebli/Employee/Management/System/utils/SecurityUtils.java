@@ -1,6 +1,5 @@
 package com.yessine_nebli.Employee.Management.System.utils;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,8 +12,11 @@ import java.util.UUID;
 @Component
 public class SecurityUtils {
 
-    @Autowired
-    private UserAccountRepo userAccountRepo;
+    private final UserAccountRepo userAccountRepo;
+
+    SecurityUtils(UserAccountRepo userAccountRepo) {
+        this.userAccountRepo = userAccountRepo;
+    }
 
     public boolean isOwner(UUID incomingEmployeeId) {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

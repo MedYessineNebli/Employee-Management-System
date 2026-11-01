@@ -3,7 +3,6 @@ package com.yessine_nebli.Employee.Management.System.controllers;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,11 +34,13 @@ import jakarta.validation.Valid;
 
 public class EmployeeController {
 
-    @Autowired 
-    private EmployeeService employeeService;
+    private final EmployeeService employeeService;
+    private final LeaveRequestService leaveRequestService;
 
-    @Autowired 
-    private LeaveRequestService leaveRequestService;
+    EmployeeController(EmployeeService employeeService, LeaveRequestService leaveRequestService) {
+        this.employeeService = employeeService;
+        this.leaveRequestService = leaveRequestService;
+    }
 
     @GetMapping
     public ResponseEntity<GlobalResponse<List<Employee>>> findAll() {

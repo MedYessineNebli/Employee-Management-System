@@ -3,7 +3,6 @@ package com.yessine_nebli.Employee.Management.System.services;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -18,11 +17,13 @@ import com.yessine_nebli.Employee.Management.System.shared.CustomResponseExcepti
 @Service
 public class LeaveRequestImpl implements LeaveRequestService {
 
-    @Autowired 
-    private EmployeeRepo employeeRepo;
+    private final EmployeeRepo employeeRepo;
+    private final LeaveRequestRepo leaveRequestRepo;
 
-    @Autowired 
-    private LeaveRequestRepo leaveRequestRepo;
+    LeaveRequestImpl(EmployeeRepo employeeRepo, LeaveRequestRepo leaveRequestRepo) {
+        this.employeeRepo = employeeRepo;
+        this.leaveRequestRepo = leaveRequestRepo;
+    }
 
     @PreAuthorize("@securityUtils.isOwner(#employeeId)")
     @Override
